@@ -12,8 +12,6 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-
 public class CitaMedica {
     private String  numeroIdentificacion;
     private String nombrePaciente;
