@@ -1,7 +1,6 @@
 package com.unibague.CitasMedicas.services;
 
 import com.unibague.CitasMedicas.model.CitaGeneral;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
