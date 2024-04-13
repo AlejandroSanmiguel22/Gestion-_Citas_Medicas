@@ -3,6 +3,7 @@ package com.unibague.CitasMedicas.controller;
 import com.unibague.CitasMedicas.model.CitaGeneral;
 import com.unibague.CitasMedicas.services.CitaGeneralService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/citas")
-
+@CrossOrigin(origins = "*")
 public class ControladorCitas {
 
     @Autowired
@@ -45,18 +46,26 @@ public class ControladorCitas {
 
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<CitaGeneral> actualizarCita(@PathVariable String id, @RequestBody CitaGeneral citaGeneral) {
-        CitaGeneral citaActualizada = citaGeneralService.actualizarCitaGeneral(id, citaGeneral);
-        if (citaActualizada != null) {
+        ResponseEntity<CitaGeneral> response = obtenerCita(id);
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+            CitaGeneral citaActualizada = citaGeneralService.actualizarCitaGeneral(id, citaGeneral);
             return ResponseEntity.ok().body(citaActualizada);
         } else {
-            return ResponseEntity.notFound().build();
+            return response;
+        }
+    }
+    @DeleteMapping("/eliminar/{id}")
+    public ResponseEntity<String> eliminarCita(@PathVariable String id) {
+        ResponseEntity<CitaGeneral> response = obtenerCita(id);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            citaGeneralService.eliminarCitaGeneral(id);
+            return ResponseEntity.ok().body("Cita eliminada correctamente");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("La cita no se encontró");
         }
     }
 
-    @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<String> eliminarCita(@PathVariable String id) {
-        citaGeneralService.eliminarCitaGeneral(id);
-        return ResponseEntity.ok().body("Cita eliminada correctamente");
-    }
+
 }
 
