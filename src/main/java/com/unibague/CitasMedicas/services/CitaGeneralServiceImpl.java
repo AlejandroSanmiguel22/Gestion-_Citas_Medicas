@@ -18,14 +18,21 @@ public class CitaGeneralServiceImpl implements CitaGeneralService {
     }
 
     @Override
-    public CitaGeneral obtenerCitaGeneral(String numeroIdentificacion) {
-        for (CitaGeneral cita : citas) {
-            if (cita.getNumeroIdentificacion().equals(numeroIdentificacion)) {
-                return cita;
+    public List<CitaGeneral> filtrarCitasGenerales(String id, String nombre, Double costoMinimo, Double costoMaximo, String tipo) {
+        List<CitaGeneral> citasFiltradas = new ArrayList<>();
+        List<CitaGeneral> todasCitas = obtenerTodasCitasGenerales();
+        for (CitaGeneral cita : todasCitas) {
+            if ((id == null || cita.getNumeroIdentificacion().equals(id)) &&
+                    (nombre == null || cita.getNombrePaciente().equals(nombre)) &&
+                    (costoMinimo == null || cita.getCosto() >= costoMinimo) &&
+                    (costoMaximo == null || cita.getCosto() <= costoMaximo) &&
+                    (tipo == null || cita.getTipoCita().equals(tipo))) {
+                citasFiltradas.add(cita);
             }
         }
-        return null;
+        return citasFiltradas;
     }
+
 
     @Override
     public List<CitaGeneral> obtenerTodasCitasGenerales() {

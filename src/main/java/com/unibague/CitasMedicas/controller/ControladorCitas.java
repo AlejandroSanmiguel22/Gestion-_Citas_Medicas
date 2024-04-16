@@ -28,15 +28,23 @@ public class ControladorCitas {
         return ResponseEntity.ok().body(nuevaCita);
     }
 
-    @GetMapping("/obtener/{id}")
-    public ResponseEntity<CitaGeneral> obtenerCita(@PathVariable String id) {
-        CitaGeneral cita = citaGeneralService.obtenerCitaGeneral(id);
-        if (cita != null) {
-            return ResponseEntity.ok().body(cita);
+    @GetMapping("/obtener")
+    public ResponseEntity<List<CitaGeneral>> obtenerCitas(
+            @RequestParam(value = "id", required = false) String id,
+            @RequestParam(value = "nombre", required = false) String nombre,
+            @RequestParam(value = "costoMinimo", required = false, defaultValue = "0") Double costoMinimo,
+            @RequestParam(value = "costoMaximo", required = false) Double costoMaximo,
+            @RequestParam(value = "tipo", required = false) String tipo) {
+        
+        List<CitaGeneral> citasFiltradas = citaGeneralService.filtrarCitasGenerales(id, nombre, costoMinimo, costoMaximo, tipo);
+
+        if (!citasFiltradas.isEmpty()) {
+            return ResponseEntity.ok().body(citasFiltradas);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
 
     @GetMapping("/listar")
     public ResponseEntity<List<CitaGeneral>> listarCitas() {
