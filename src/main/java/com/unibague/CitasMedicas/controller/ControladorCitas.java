@@ -3,6 +3,7 @@ package com.unibague.CitasMedicas.controller;
 import com.unibague.CitasMedicas.model.CitaGeneral;
 import com.unibague.CitasMedicas.services.CitaGeneralService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/citas")
-
+@CrossOrigin(origins = "*")
 public class ControladorCitas {
 
     @Autowired
@@ -34,7 +35,7 @@ public class ControladorCitas {
             @RequestParam(value = "costoMinimo", required = false, defaultValue = "0") Double costoMinimo,
             @RequestParam(value = "costoMaximo", required = false) Double costoMaximo,
             @RequestParam(value = "tipo", required = false) String tipo) {
-        
+
         List<CitaGeneral> citasFiltradas = citaGeneralService.filtrarCitasGenerales(id, nombre, costoMinimo, costoMaximo, tipo);
 
         if (!citasFiltradas.isEmpty()) {
