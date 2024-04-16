@@ -35,7 +35,7 @@ public class ControladorCitas {
             @RequestParam(value = "costoMinimo", required = false, defaultValue = "0") Double costoMinimo,
             @RequestParam(value = "costoMaximo", required = false) Double costoMaximo,
             @RequestParam(value = "tipo", required = false) String tipo) {
-        
+
         List<CitaGeneral> citasFiltradas = citaGeneralService.filtrarCitasGenerales(id, nombre, costoMinimo, costoMaximo, tipo);
 
         if (!citasFiltradas.isEmpty()) {
@@ -54,26 +54,18 @@ public class ControladorCitas {
 
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<CitaGeneral> actualizarCita(@PathVariable String id, @RequestBody CitaGeneral citaGeneral) {
-        ResponseEntity<CitaGeneral> response = obtenerCita(id);
-
-        if (response.getStatusCode() == HttpStatus.OK) {
-            CitaGeneral citaActualizada = citaGeneralService.actualizarCitaGeneral(id, citaGeneral);
+        CitaGeneral citaActualizada = citaGeneralService.actualizarCitaGeneral(id, citaGeneral);
+        if (citaActualizada != null) {
             return ResponseEntity.ok().body(citaActualizada);
         } else {
-            return response;
+            return ResponseEntity.notFound().build();
         }
     }
+
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<String> eliminarCita(@PathVariable String id) {
-        ResponseEntity<CitaGeneral> response = obtenerCita(id);
-        if (response.getStatusCode() == HttpStatus.OK) {
-            citaGeneralService.eliminarCitaGeneral(id);
-            return ResponseEntity.ok().body("Cita eliminada correctamente");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("La cita no se encontró");
-        }
+        citaGeneralService.eliminarCitaGeneral(id);
+        return ResponseEntity.ok().body("Cita eliminada correctamente");
     }
-
-
 }
 
