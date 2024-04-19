@@ -22,13 +22,13 @@ public class ControladorCitas {
         return "Service status fine!";
     }
 
-    @PostMapping("/crear")
+    @PostMapping
     public ResponseEntity<CitaGeneral> crearCita(@RequestBody CitaGeneral citaGeneral) {
         CitaGeneral nuevaCita = citaGeneralService.crearCitaGeneral(citaGeneral);
         return ResponseEntity.ok().body(nuevaCita);
     }
 
-    @GetMapping("/obtener")
+    @GetMapping
     public ResponseEntity<List<CitaGeneral>> obtenerCitas(
             @RequestParam(value = "id", required = false) String id,
             @RequestParam(value = "nombre", required = false) String nombre,
@@ -46,13 +46,13 @@ public class ControladorCitas {
     }
 
 
-    @GetMapping("/listar")
+    @GetMapping("/todas-las-citas")
     public ResponseEntity<List<CitaGeneral>> listarCitas() {
         List<CitaGeneral> citas = citaGeneralService.obtenerTodasCitasGenerales();
         return ResponseEntity.ok().body(citas);
     }
 
-    @PutMapping("/actualizar/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<CitaGeneral> actualizarCita(@PathVariable String id, @RequestBody CitaGeneral citaGeneral) {
         CitaGeneral citaActualizada = citaGeneralService.actualizarCitaGeneral(id, citaGeneral);
         if (citaActualizada != null) {
@@ -62,7 +62,7 @@ public class ControladorCitas {
         }
     }
 
-    @DeleteMapping("/eliminar/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarCita(@PathVariable String id) {
         citaGeneralService.eliminarCitaGeneral(id);
         return ResponseEntity.ok().body("Cita eliminada correctamente");
