@@ -54,6 +54,21 @@ public class CitaGeneralServiceImpl implements CitaGeneralService {
     public void eliminarCitaGeneral(String numeroIdentificacion) {
         citas.removeIf(cita -> cita.getNumeroIdentificacion().equals(numeroIdentificacion));
     }
+
+    @Override
+    public CitaGeneral obtenerCitaGeneralPorId(String id) {
+        // Iterate through the citas list
+        for (CitaGeneral cita : citas) {
+            // Check if the cita's ID (or a unique identifier) matches the provided id
+            if (cita.getNumeroIdentificacion().equals(id)) {
+                // If a match is found, return the CitaGeneral object
+                return cita;
+            }
+        }
+
+        // If no match is found, return null
+        return null;
+    }
 }
 
 
