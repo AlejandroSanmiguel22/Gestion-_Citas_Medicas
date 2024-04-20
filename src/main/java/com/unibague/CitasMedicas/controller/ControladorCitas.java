@@ -67,5 +67,17 @@ public class ControladorCitas {
         citaGeneralService.eliminarCitaGeneral(id);
         return ResponseEntity.ok().body("Cita eliminada correctamente");
     }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CitaGeneral> obtenerCitaPorId(@PathVariable String id) {
+        CitaGeneral cita = citaGeneralService.obtenerCitaGeneralPorId(id);
+        if (cita != null) {
+            return ResponseEntity.ok().body(cita);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }
 

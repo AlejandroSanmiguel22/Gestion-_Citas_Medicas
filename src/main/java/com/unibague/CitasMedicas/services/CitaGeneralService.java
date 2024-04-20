@@ -10,4 +10,5 @@ public interface CitaGeneralService {
     List<CitaGeneral> obtenerTodasCitasGenerales();
     CitaGeneral actualizarCitaGeneral(String numeroIdentificacion, CitaGeneral citaGeneral);
     void eliminarCitaGeneral(String numeroIdentificacion);
+    CitaGeneral obtenerCitaGeneralPorId(String id);
 }
