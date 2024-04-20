@@ -32,9 +32,11 @@ public class ControladorConsultorio {
     public ResponseEntity<?> asignarCitaAConsultorio(@PathVariable String idConsultorio, @RequestParam String idCita) {
         Consultorio consultorio = consultorioService.obtenerConsultorioPorId(idConsultorio);
         CitaGeneral cita = citaGeneralService.obtenerCitaGeneralPorId(idCita);
+
         if (consultorio != null && cita != null) {
-            cita.setConsultorio(consultorio);
-            citaGeneralService.actualizarCitaGeneral(idCita, cita);
+            List<CitaGeneral> citasConsultorio = consultorio.getCitas();
+            citasConsultorio.add(cita); // Agregar la cita al consultorio
+            consultorioService.actualizarConsultorio(idConsultorio, consultorio); // Actualizar el consultorio con la nueva cita
             return ResponseEntity.ok().body(consultorio);
         } else {
             if (consultorio == null) {
@@ -48,7 +50,6 @@ public class ControladorConsultorio {
             }
         }
     }
-
 
 
     @GetMapping("/{id}")
