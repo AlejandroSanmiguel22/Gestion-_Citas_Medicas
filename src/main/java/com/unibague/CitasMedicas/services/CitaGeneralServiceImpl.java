@@ -83,6 +83,7 @@ public class CitaGeneralServiceImpl implements CitaGeneralService {
         }
     }
 
+
     @Override
     public List<CitaGeneral> obtenerCitasPorConsultorio(String idConsultorio) {
         List<CitaGeneral> citasPorConsultorio = new ArrayList<>();
