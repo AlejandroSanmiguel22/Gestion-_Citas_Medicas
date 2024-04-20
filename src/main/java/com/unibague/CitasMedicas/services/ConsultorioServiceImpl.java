@@ -1,6 +1,7 @@
 package com.unibague.CitasMedicas.services;
 
 
+import com.unibague.CitasMedicas.model.CitaGeneral;
 import com.unibague.CitasMedicas.model.Consultorio;
 import org.springframework.stereotype.Service;
 
@@ -34,13 +35,11 @@ public class ConsultorioServiceImpl implements ConsultorioService {
     }
 
     @Override
-    public Consultorio actualizarConsultorio(String id, Consultorio consultorio) {
+    public Consultorio actualizarConsultorio(String id, Consultorio consultorioActualizado) {
         for (int i = 0; i < consultorios.size(); i++) {
-            Consultorio c = consultorios.get(i);
-            if (c.getId().equals(id)) {
-                consultorio.setId(id);
-                consultorios.set(i, consultorio);
-                return consultorio;
+            if (consultorios.get(i).getId().equals(id)) {
+                consultorios.set(i, consultorioActualizado);
+                return consultorioActualizado;
             }
         }
         return null;

@@ -13,8 +13,6 @@ public interface CitaGeneralService {
     CitaGeneral actualizarCitaGeneral(String numeroIdentificacion, CitaGeneral citaGeneral);
     void eliminarCitaGeneral(String numeroIdentificacion);
     CitaGeneral obtenerCitaGeneralPorId(String id);
-
-    // Métodos relacionados con consultorios
     void asignarConsultorioACita(String idCita, String idConsultorio);
     List<CitaGeneral> obtenerCitasPorConsultorio(String idConsultorio);
 }

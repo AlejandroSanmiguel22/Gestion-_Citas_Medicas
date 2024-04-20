@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,9 +35,15 @@ public class ControladorConsultorio {
         CitaGeneral cita = citaGeneralService.obtenerCitaGeneralPorId(idCita);
 
         if (consultorio != null && cita != null) {
-            List<CitaGeneral> citasConsultorio = consultorio.getCitas();
-            citasConsultorio.add(cita); // Agregar la cita al consultorio
-            consultorioService.actualizarConsultorio(idConsultorio, consultorio); // Actualizar el consultorio con la nueva cita
+            if (consultorio.getCitas() == null) {
+
+                consultorio.setCitas(new ArrayList<>());
+            }
+
+            consultorio.getCitas().add(cita);
+
+            consultorioService.actualizarConsultorio(idConsultorio, consultorio);
+
             return ResponseEntity.ok().body(consultorio);
         } else {
             if (consultorio == null) {
@@ -50,7 +57,6 @@ public class ControladorConsultorio {
             }
         }
     }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<Consultorio> obtenerConsultorioPorId(@PathVariable String id) {
@@ -69,10 +75,12 @@ public class ControladorConsultorio {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Consultorio> actualizarConsultorio(@PathVariable String id, @RequestBody Consultorio consultorio) {
-        Consultorio consultorioActualizado = consultorioService.actualizarConsultorio(id, consultorio);
-        if (consultorioActualizado != null) {
-            return ResponseEntity.ok().body(consultorioActualizado);
+    public ResponseEntity<Consultorio> actualizarConsultorio(@PathVariable String id, @RequestBody Consultorio consultorioActualizado) {
+        Consultorio consultorioExistente = consultorioService.obtenerConsultorioPorId(id);
+        if (consultorioExistente != null) {
+            consultorioActualizado.setCitas(consultorioExistente.getCitas());
+            Consultorio consultorioActualizadoFinal = consultorioService.actualizarConsultorio(id, consultorioActualizado);
+            return ResponseEntity.ok().body(consultorioActualizadoFinal);
         } else {
             return ResponseEntity.notFound().build();
         }
