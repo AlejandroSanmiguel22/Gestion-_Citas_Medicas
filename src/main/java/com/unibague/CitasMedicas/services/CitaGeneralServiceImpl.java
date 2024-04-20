@@ -1,7 +1,13 @@
 package com.unibague.CitasMedicas.services;
 
+import com.unibague.CitasMedicas.services.ConsultorioService;
 import com.unibague.CitasMedicas.model.CitaGeneral;
+import com.unibague.CitasMedicas.model.Consultorio;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+
+
 
 import java.util.List;
 import java.util.ArrayList;
@@ -10,6 +16,8 @@ import java.util.ArrayList;
 public class CitaGeneralServiceImpl implements CitaGeneralService {
 
     private List<CitaGeneral> citas = new ArrayList<>();
+    @Autowired
+    private ConsultorioService consultorioService;
 
     @Override
     public CitaGeneral crearCitaGeneral(CitaGeneral citaGeneral) {
@@ -20,8 +28,7 @@ public class CitaGeneralServiceImpl implements CitaGeneralService {
     @Override
     public List<CitaGeneral> filtrarCitasGenerales(String id, String nombre, Double costoMinimo, Double costoMaximo, String tipo) {
         List<CitaGeneral> citasFiltradas = new ArrayList<>();
-        List<CitaGeneral> todasCitas = obtenerTodasCitasGenerales();
-        for (CitaGeneral cita : todasCitas) {
+        for (CitaGeneral cita : citas) {
             if ((id == null || cita.getNumeroIdentificacion().equals(id)) &&
                     (nombre == null || cita.getNombrePaciente().equals(nombre)) &&
                     (costoMinimo == null || cita.getCosto() >= costoMinimo) &&
@@ -32,7 +39,6 @@ public class CitaGeneralServiceImpl implements CitaGeneralService {
         }
         return citasFiltradas;
     }
-
 
     @Override
     public List<CitaGeneral> obtenerTodasCitasGenerales() {
@@ -57,18 +63,37 @@ public class CitaGeneralServiceImpl implements CitaGeneralService {
 
     @Override
     public CitaGeneral obtenerCitaGeneralPorId(String id) {
-        // Iterate through the citas list
         for (CitaGeneral cita : citas) {
-            // Check if the cita's ID (or a unique identifier) matches the provided id
             if (cita.getNumeroIdentificacion().equals(id)) {
-                // If a match is found, return the CitaGeneral object
                 return cita;
             }
         }
-
-        // If no match is found, return null
         return null;
     }
+
+    @Override
+    public void asignarConsultorioACita(String idCita, String idConsultorio) {
+        CitaGeneral cita = obtenerCitaGeneralPorId(idCita);
+        if (cita != null) {
+            Consultorio consultorio = consultorioService.obtenerConsultorioPorId(idConsultorio);
+
+            if (consultorio != null) {
+                cita.setConsultorio(consultorio);
+            }
+        }
+    }
+
+    @Override
+    public List<CitaGeneral> obtenerCitasPorConsultorio(String idConsultorio) {
+        List<CitaGeneral> citasPorConsultorio = new ArrayList<>();
+        for (CitaGeneral cita : citas) {
+            if (cita.getConsultorio() != null && cita.getConsultorio().getId().equals(idConsultorio)) {
+                citasPorConsultorio.add(cita);
+            }
+        }
+        return citasPorConsultorio;
+    }
 }
+
 
 
