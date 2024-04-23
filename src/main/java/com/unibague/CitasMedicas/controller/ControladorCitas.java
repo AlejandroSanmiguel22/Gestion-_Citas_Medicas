@@ -24,9 +24,23 @@ public class ControladorCitas {
 
     @PostMapping
     public ResponseEntity<CitaGeneral> crearCita(@RequestBody CitaGeneral citaGeneral) {
+        // Verificar si se proporcionó un ID de consultorio
+        if (citaGeneral.getIdConsultorio() != null) {
+            // Asignar el consultorio a la cita
+            String idConsultorio = citaGeneral.getIdConsultorio();
+            String idCita = citaGeneral.getNumeroIdentificacion();
+            citaGeneralService.asignarConsultorioACita(idCita, idConsultorio);
+        }
+
+        // Crear la cita general
         CitaGeneral nuevaCita = citaGeneralService.crearCitaGeneral(citaGeneral);
+
+        // Devolver la respuesta con la nueva cita
         return ResponseEntity.ok().body(nuevaCita);
     }
+
+
+
 
     @GetMapping
     public ResponseEntity<List<CitaGeneral>> obtenerCitas(
