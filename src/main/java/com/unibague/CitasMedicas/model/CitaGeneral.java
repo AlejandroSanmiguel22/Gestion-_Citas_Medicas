@@ -15,13 +15,13 @@ import lombok.NoArgsConstructor;
 public class CitaGeneral extends CitaMedica {
     private String nombreGeneralista;
     private String observacion;
-    private Consultorio consultorio;
+    private String idConsultorio;
 
-    public CitaGeneral(String numeroIdentificacion, String nombrePaciente, LocalDate fecha, double costo, String tipoCita, String nombreGeneralista, String observacion, Consultorio consultorio) {
+    public CitaGeneral(String numeroIdentificacion, String nombrePaciente, LocalDate fecha, double costo, String tipoCita, String nombreGeneralista, String observacion, String iConsultorio) {
         super(numeroIdentificacion, nombrePaciente, fecha, costo, tipoCita);
         this.nombreGeneralista = nombreGeneralista;
         this.observacion = observacion;
-        this.consultorio = consultorio;
+        this.idConsultorio = iConsultorio;
     }
 }
 

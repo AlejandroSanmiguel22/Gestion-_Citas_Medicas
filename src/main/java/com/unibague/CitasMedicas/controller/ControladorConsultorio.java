@@ -36,11 +36,18 @@ public class ControladorConsultorio {
 
         if (consultorio != null && cita != null) {
             if (consultorio.getCitas() == null) {
-
                 consultorio.setCitas(new ArrayList<>());
             }
 
+            // Verificar si la cita ya está asignada a algún consultorio
+            if (cita.getIdConsultorio() != null) {
+                Map<String, String> responseBody = new HashMap<>();
+                responseBody.put("message", "La cita ya está asignada a otro consultorio.");
+                return ResponseEntity.badRequest().body(responseBody);
+            }
+
             consultorio.getCitas().add(cita);
+            cita.setIdConsultorio(idConsultorio); // Asignar el consultorio a la cita
 
             consultorioService.actualizarConsultorio(idConsultorio, consultorio);
 
@@ -57,6 +64,7 @@ public class ControladorConsultorio {
             }
         }
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Consultorio> obtenerConsultorioPorId(@PathVariable String id) {
