@@ -27,23 +27,15 @@ public class ControladorCitas {
 
     @PostMapping
     public ResponseEntity<CitaGeneral> crearCita(@RequestBody CitaGeneral citaGeneral) {
-        // Verificar si se proporcionó un ID de consultorio
         if (citaGeneral.getIdConsultorio() != null) {
-            // Asignar el consultorio a la cita
             String idConsultorio = citaGeneral.getIdConsultorio();
             String idCita = citaGeneral.getNumeroIdentificacion();
             citaGeneralService.asignarConsultorioACita(idCita, idConsultorio);
         }
-
-        // Crear la cita general
         CitaGeneral nuevaCita = citaGeneralService.crearCitaGeneral(citaGeneral);
 
-        // Devolver la respuesta con la nueva cita
         return ResponseEntity.ok().body(nuevaCita);
     }
-
-
-
 
     @GetMapping
     public ResponseEntity<List<CitaGeneral>> obtenerCitas(
@@ -81,25 +73,18 @@ public class ControladorCitas {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarCita(@PathVariable String id) {
-        // Obtener la cita que se va a eliminar
         CitaGeneral cita = citaGeneralService.obtenerCitaGeneralPorId(id);
 
         if (cita != null) {
-            // Verificar si la cita tiene un consultorio asignado
             String idConsultorio = cita.getIdConsultorio();
             if (idConsultorio != null) {
-                // Obtener el consultorio correspondiente
                 Consultorio consultorio = consultorioService.obtenerConsultorioPorId(idConsultorio);
 
                 if (consultorio != null) {
-                    // Eliminar la cita del consultorio
                     consultorio.getCitas().removeIf(c -> c.getNumeroIdentificacion().equals(id));
-                    // Actualizar el consultorio en el servicio
                     consultorioService.actualizarConsultorio(idConsultorio, consultorio);
                 }
             }
-
-            // Eliminar la cita de la lista de citas generales
             citaGeneralService.eliminarCitaGeneral(id);
             return ResponseEntity.ok().body("Cita eliminada correctamente");
         } else {

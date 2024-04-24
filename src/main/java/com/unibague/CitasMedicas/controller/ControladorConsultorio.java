@@ -39,7 +39,6 @@ public class ControladorConsultorio {
                 consultorio.setCitas(new ArrayList<>());
             }
 
-            // Verificar si la cita ya está asignada a algún consultorio
             if (cita.getIdConsultorio() != null) {
                 Map<String, String> responseBody = new HashMap<>();
                 responseBody.put("message", "La cita ya está asignada a otro consultorio.");
@@ -47,8 +46,7 @@ public class ControladorConsultorio {
             }
 
             consultorio.getCitas().add(cita);
-            cita.setIdConsultorio(idConsultorio); // Asignar el consultorio a la cita
-
+            cita.setIdConsultorio(idConsultorio);
             consultorioService.actualizarConsultorio(idConsultorio, consultorio);
 
             return ResponseEntity.ok().body(consultorio);
@@ -82,17 +80,30 @@ public class ControladorConsultorio {
         return ResponseEntity.ok().body(consultorios);
     }
 
+
     @PutMapping("/{id}")
     public ResponseEntity<Consultorio> actualizarConsultorio(@PathVariable String id, @RequestBody Consultorio consultorioActualizado) {
         Consultorio consultorioExistente = consultorioService.obtenerConsultorioPorId(id);
+
         if (consultorioExistente != null) {
-            consultorioActualizado.setCitas(consultorioExistente.getCitas());
-            Consultorio consultorioActualizadoFinal = consultorioService.actualizarConsultorio(id, consultorioActualizado);
+            consultorioExistente.setId(consultorioActualizado.getId());
+            consultorioExistente.setNombre(consultorioActualizado.getNombre());
+
+            List<CitaGeneral> citas = consultorioExistente.getCitas();
+            if (citas != null && !citas.isEmpty()) {
+                for (CitaGeneral cita : citas) {
+                    cita.setIdConsultorio(consultorioActualizado.getId());
+                    citaGeneralService.actualizarCitaGeneral(cita.getNumeroIdentificacion(), cita);
+                }
+            }
+            Consultorio consultorioActualizadoFinal = consultorioService.actualizarConsultorio(id, consultorioExistente);
             return ResponseEntity.ok().body(consultorioActualizadoFinal);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarConsultorio(@PathVariable String id) {

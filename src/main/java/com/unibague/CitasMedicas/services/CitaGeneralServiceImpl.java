@@ -42,10 +42,8 @@ public class CitaGeneralServiceImpl implements CitaGeneralService {
 
     @Override
     public List<CitaGeneral> obtenerTodasCitasGenerales() {
-        // Obtener todas las citas
         List<CitaGeneral> citas = new ArrayList<>(this.citas);
 
-        // Agregar información del consultorio a cada cita
         for (CitaGeneral cita : citas) {
             String idConsultorio = cita.getIdConsultorio();
             if (idConsultorio != null) {
@@ -55,7 +53,6 @@ public class CitaGeneralServiceImpl implements CitaGeneralService {
                 }
             }
         }
-
         return citas;
     }
 
@@ -89,7 +86,6 @@ public class CitaGeneralServiceImpl implements CitaGeneralService {
     public void asignarConsultorioACita(String idCita, String idConsultorio) {
         CitaGeneral cita = obtenerCitaGeneralPorId(idCita);
         if (cita != null) {
-            // Aquí se asigna el ID del consultorio a la cita en lugar del objeto completo del consultorio
             cita.setIdConsultorio(idConsultorio);
         }
     }
