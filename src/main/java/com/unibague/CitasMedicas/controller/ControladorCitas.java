@@ -1,7 +1,9 @@
 package com.unibague.CitasMedicas.controller;
 
 import com.unibague.CitasMedicas.model.CitaGeneral;
+import com.unibague.CitasMedicas.model.Consultorio;
 import com.unibague.CitasMedicas.services.CitaGeneralService;
+import com.unibague.CitasMedicas.services.ConsultorioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +18,8 @@ public class ControladorCitas {
 
     @Autowired
     private CitaGeneralService citaGeneralService;
-
+    @Autowired
+    private ConsultorioService consultorioService;
     @RequestMapping(value = "/healthcheck")
     public String healthCheck(){
         return "Service status fine!";
@@ -78,9 +81,32 @@ public class ControladorCitas {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarCita(@PathVariable String id) {
-        citaGeneralService.eliminarCitaGeneral(id);
-        return ResponseEntity.ok().body("Cita eliminada correctamente");
+        // Obtener la cita que se va a eliminar
+        CitaGeneral cita = citaGeneralService.obtenerCitaGeneralPorId(id);
+
+        if (cita != null) {
+            // Verificar si la cita tiene un consultorio asignado
+            String idConsultorio = cita.getIdConsultorio();
+            if (idConsultorio != null) {
+                // Obtener el consultorio correspondiente
+                Consultorio consultorio = consultorioService.obtenerConsultorioPorId(idConsultorio);
+
+                if (consultorio != null) {
+                    // Eliminar la cita del consultorio
+                    consultorio.getCitas().removeIf(c -> c.getNumeroIdentificacion().equals(id));
+                    // Actualizar el consultorio en el servicio
+                    consultorioService.actualizarConsultorio(idConsultorio, consultorio);
+                }
+            }
+
+            // Eliminar la cita de la lista de citas generales
+            citaGeneralService.eliminarCitaGeneral(id);
+            return ResponseEntity.ok().body("Cita eliminada correctamente");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
+
 
 
     @GetMapping("/{id}")
