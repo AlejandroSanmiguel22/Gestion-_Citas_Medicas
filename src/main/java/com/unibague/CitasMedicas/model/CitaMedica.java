@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
 
+import javax.persistence.MappedSuperclass;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@MappedSuperclass
 public class CitaMedica {
     private String  numeroIdentificacion;
     private String nombrePaciente;

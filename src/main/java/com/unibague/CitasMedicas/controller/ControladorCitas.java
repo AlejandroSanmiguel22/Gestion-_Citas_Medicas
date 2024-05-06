@@ -1,11 +1,11 @@
 package com.unibague.CitasMedicas.controller;
 
+import com.unibague.CitasMedicas.interfaz.CitaGeneralRepository;
 import com.unibague.CitasMedicas.model.CitaGeneral;
 import com.unibague.CitasMedicas.model.Consultorio;
 import com.unibague.CitasMedicas.services.CitaGeneralService;
 import com.unibague.CitasMedicas.services.ConsultorioService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,9 +17,14 @@ import java.util.List;
 public class ControladorCitas {
 
     @Autowired
+    private CitaGeneralRepository citaGeneralRepository;
+
+    @Autowired
     private CitaGeneralService citaGeneralService;
+
     @Autowired
     private ConsultorioService consultorioService;
+
     @RequestMapping(value = "/healthcheck")
     public String healthCheck(){
         return "Service status fine!";
@@ -53,7 +58,6 @@ public class ControladorCitas {
             return ResponseEntity.notFound().build();
         }
     }
-
 
     @GetMapping("/todas-las-citas")
     public ResponseEntity<List<CitaGeneral>> listarCitas() {
@@ -92,8 +96,6 @@ public class ControladorCitas {
         }
     }
 
-
-
     @GetMapping("/{id}")
     public ResponseEntity<CitaGeneral> obtenerCitaPorId(@PathVariable String id) {
         CitaGeneral cita = citaGeneralService.obtenerCitaGeneralPorId(id);
@@ -103,6 +105,4 @@ public class ControladorCitas {
             return ResponseEntity.notFound().build();
         }
     }
-
 }
-
