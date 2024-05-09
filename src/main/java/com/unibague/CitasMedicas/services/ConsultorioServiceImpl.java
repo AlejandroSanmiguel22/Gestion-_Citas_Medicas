@@ -34,16 +34,24 @@ public class ConsultorioServiceImpl implements ConsultorioService {
         return new ArrayList<>(consultorios);
     }
 
-    @Override
     public Consultorio actualizarConsultorio(String id, Consultorio consultorioActualizado) {
         for (int i = 0; i < consultorios.size(); i++) {
             if (consultorios.get(i).getId().equals(id)) {
                 consultorios.set(i, consultorioActualizado);
+                // Actualiza las citas asociadas al consultorio
+                actualizarCitasConsultorio(consultorioActualizado);
                 return consultorioActualizado;
             }
         }
         return null;
     }
+
+    private void actualizarCitasConsultorio(Consultorio consultorioActualizado) {
+        for (CitaGeneral cita : consultorioActualizado.getCitas()) {
+            cita.setIdConsultorio(consultorioActualizado.getId());
+        }
+    }
+
 
     @Override
     public void eliminarConsultorio(String id) {

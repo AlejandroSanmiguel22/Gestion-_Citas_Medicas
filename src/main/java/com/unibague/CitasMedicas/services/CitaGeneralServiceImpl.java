@@ -1,7 +1,7 @@
 package com.unibague.CitasMedicas.services;
 
 import com.unibague.CitasMedicas.model.CitaGeneral;
-import com.unibague.CitasMedicas.interfaz.CitaGeneralRepository;
+import com.unibague.CitasMedicas.repository.CitaGeneralRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +35,7 @@ public class CitaGeneralServiceImpl implements CitaGeneralService {
 
     @Override
     public CitaGeneral actualizarCitaGeneral(String numeroIdentificacion, CitaGeneral citaGeneral) {
-        CitaGeneral citaExistente = obtenerCitaGeneralPorId(numeroIdentificacion);
+        CitaGeneral citaExistente = citaGeneralRepository.findByNumeroIdentificacion(numeroIdentificacion);
         if (citaExistente != null) {
             // Copiar los valores actualizados a la cita existente
             citaExistente.setNombrePaciente(citaGeneral.getNombrePaciente());
