@@ -1,11 +1,9 @@
 package com.unibague.CitasMedicas.controller;
 
-import com.unibague.CitasMedicas.interfaz.CitaGeneralRepository;
 import com.unibague.CitasMedicas.model.CitaGeneral;
-import com.unibague.CitasMedicas.model.Consultorio;
 import com.unibague.CitasMedicas.services.CitaGeneralService;
-import com.unibague.CitasMedicas.services.ConsultorioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,30 +15,29 @@ import java.util.List;
 public class ControladorCitas {
 
     @Autowired
-    private CitaGeneralRepository citaGeneralRepository;
-
-    @Autowired
     private CitaGeneralService citaGeneralService;
 
-    @Autowired
-    private ConsultorioService consultorioService;
-
     @RequestMapping(value = "/healthcheck")
-    public String healthCheck(){
+    public String healthCheck() {
         return "Service status fine!";
     }
 
     @PostMapping
-    public ResponseEntity<CitaGeneral> crearCita(@RequestBody CitaGeneral citaGeneral) {
-        if (citaGeneral.getIdConsultorio() != null) {
-            String idConsultorio = citaGeneral.getIdConsultorio();
-            String idCita = citaGeneral.getNumeroIdentificacion();
-            citaGeneralService.asignarConsultorioACita(idCita, idConsultorio);
+    public ResponseEntity<?> crearCita(@RequestBody CitaGeneral citaGeneral) {
+        try {
+            if (citaGeneral.getIdConsultorio() != null) {
+                String idConsultorio = citaGeneral.getIdConsultorio();
+                String idCita = citaGeneral.getNumeroIdentificacion();
+                citaGeneralService.asignarConsultorioACita(idCita, idConsultorio);
+            }
+            CitaGeneral nuevaCita = citaGeneralService.crearCitaGeneral(citaGeneral);
+            return ResponseEntity.ok().body(nuevaCita);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al crear la cita: " + e.getMessage());
         }
-        CitaGeneral nuevaCita = citaGeneralService.crearCitaGeneral(citaGeneral);
-
-        return ResponseEntity.ok().body(nuevaCita);
     }
+
 
     @GetMapping
     public ResponseEntity<List<CitaGeneral>> obtenerCitas(
@@ -80,15 +77,6 @@ public class ControladorCitas {
         CitaGeneral cita = citaGeneralService.obtenerCitaGeneralPorId(id);
 
         if (cita != null) {
-            String idConsultorio = cita.getIdConsultorio();
-            if (idConsultorio != null) {
-                Consultorio consultorio = consultorioService.obtenerConsultorioPorId(idConsultorio);
-
-                if (consultorio != null) {
-                    consultorio.getCitas().removeIf(c -> c.getNumeroIdentificacion().equals(id));
-                    consultorioService.actualizarConsultorio(idConsultorio, consultorio);
-                }
-            }
             citaGeneralService.eliminarCitaGeneral(id);
             return ResponseEntity.ok().body("Cita eliminada correctamente");
         } else {
