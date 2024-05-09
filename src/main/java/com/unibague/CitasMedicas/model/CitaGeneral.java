@@ -11,9 +11,7 @@ public class CitaGeneral extends CitaMedica {
     private String nombreGeneralista;
     private String observacion;
     private String idConsultorio;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
 
     public CitaGeneral() {
     }
@@ -47,13 +45,5 @@ public class CitaGeneral extends CitaMedica {
 
     public void setIdConsultorio(String idConsultorio) {
         this.idConsultorio = idConsultorio;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
     }
 }

@@ -64,13 +64,22 @@ public class ControladorCitas {
 
     @PutMapping("/{id}")
     public ResponseEntity<CitaGeneral> actualizarCita(@PathVariable String id, @RequestBody CitaGeneral citaGeneral) {
-        CitaGeneral citaActualizada = citaGeneralService.actualizarCitaGeneral(id, citaGeneral);
-        if (citaActualizada != null) {
-            return ResponseEntity.ok().body(citaActualizada);
+        CitaGeneral citaExistente = citaGeneralService.obtenerCitaGeneralPorId(id);
+        if (citaExistente != null) {
+            // Conserva el consultorio asociado
+            citaGeneral.setIdConsultorio(citaExistente.getIdConsultorio());
+            // Actualiza la cita
+            CitaGeneral citaActualizada = citaGeneralService.actualizarCitaGeneral(id, citaGeneral);
+            if (citaActualizada != null) {
+                return ResponseEntity.ok().body(citaActualizada);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminarCita(@PathVariable String id) {
