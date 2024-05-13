@@ -39,15 +39,15 @@ public class ControladorCitas {
     }
 
 
-    @GetMapping
+    @GetMapping("/citas")
     public ResponseEntity<List<CitaGeneral>> obtenerCitas(
             @RequestParam(value = "id", required = false) String id,
             @RequestParam(value = "nombre", required = false) String nombre,
             @RequestParam(value = "costoMinimo", required = false, defaultValue = "0") Double costoMinimo,
-            @RequestParam(value = "costoMaximo", required = false) Double costoMaximo,
+            @RequestParam(value = "costoMaximo", required = false, defaultValue = "9999999") Double costoMaximo,
             @RequestParam(value = "tipo", required = false) String tipo) {
 
-        List<CitaGeneral> citasFiltradas = citaGeneralService.filtrarCitasGenerales(id, nombre, tipo,costoMinimo,costoMaximo);
+        List<CitaGeneral> citasFiltradas = citaGeneralService.filtrarCitasGenerales(id, nombre, tipo, costoMinimo, costoMaximo);
 
         if (!citasFiltradas.isEmpty()) {
             return ResponseEntity.ok().body(citasFiltradas);
@@ -55,6 +55,7 @@ public class ControladorCitas {
             return ResponseEntity.notFound().build();
         }
     }
+
 
     @GetMapping("/todas-las-citas")
     public ResponseEntity<List<CitaGeneral>> listarCitas() {
