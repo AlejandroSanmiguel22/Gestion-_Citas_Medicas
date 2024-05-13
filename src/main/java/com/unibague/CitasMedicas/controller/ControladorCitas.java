@@ -38,8 +38,7 @@ public class ControladorCitas {
         }
     }
 
-
-    @GetMapping("/citas")
+    @GetMapping
     public ResponseEntity<List<CitaGeneral>> obtenerCitas(
             @RequestParam(value = "id", required = false) String id,
             @RequestParam(value = "nombre", required = false) String nombre,
@@ -55,8 +54,7 @@ public class ControladorCitas {
             return ResponseEntity.notFound().build();
         }
     }
-
-
+    
     @GetMapping("/todas-las-citas")
     public ResponseEntity<List<CitaGeneral>> listarCitas() {
         List<CitaGeneral> citas = citaGeneralService.obtenerTodasCitasGenerales();
