@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
 
+import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public class CitaMedica {
     @Id
+    @Column(length = 50)
     private String  numeroIdentificacion;
     private String nombrePaciente;
     private LocalDate fecha;
