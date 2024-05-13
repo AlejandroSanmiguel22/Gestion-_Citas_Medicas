@@ -21,13 +21,14 @@ public class CitaGeneralServiceImpl implements CitaGeneralService {
 
     @Override
     public List<CitaGeneral> filtrarCitasGenerales(String id, String nombre, String tipo, Double costoMinimo, Double costoMaximo) {
-        if (id != null || nombre != null || tipo != null || costoMinimo != null || costoMaximo != null) {
+        if (id != null && nombre != null && tipo != null && costoMinimo != null && costoMaximo != null) {
             return citaGeneralRepository.findByNombreTipoCostoId(id, nombre, tipo, costoMinimo, costoMaximo);
         } else {
-            // Si ninguno de los parámetros es proporcionado, devuelve todas las citas
+            // Si alguno de los parámetros es null, devuelve todas las citas
             return citaGeneralRepository.findAll();
         }
     }
+
 
     @Override
     public List<CitaGeneral> obtenerTodasCitasGenerales() {
