@@ -47,7 +47,7 @@ public class ControladorCitas {
             @RequestParam(value = "costoMaximo", required = false) Double costoMaximo,
             @RequestParam(value = "tipo", required = false) String tipo) {
 
-        List<CitaGeneral> citasFiltradas = citaGeneralService.filtrarCitasGenerales(id, nombre, costoMinimo, costoMaximo, tipo);
+        List<CitaGeneral> citasFiltradas = citaGeneralService.filtrarCitasGenerales(id, nombre, tipo,costoMinimo,costoMaximo);
 
         if (!citasFiltradas.isEmpty()) {
             return ResponseEntity.ok().body(citasFiltradas);

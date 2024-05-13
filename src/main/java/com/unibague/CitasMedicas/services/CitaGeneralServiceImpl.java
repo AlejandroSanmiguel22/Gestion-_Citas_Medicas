@@ -20,7 +20,7 @@ public class CitaGeneralServiceImpl implements CitaGeneralService {
     }
 
     @Override
-    public List<CitaGeneral> filtrarCitasGenerales(String id, String nombre, Double costoMinimo, Double costoMaximo, String tipo) {
+    public List<CitaGeneral> filtrarCitasGenerales(String id, String nombre, String tipo, Double costoMinimo, Double costoMaximo) {
         if (nombre != null || tipo != null || costoMinimo != null || costoMaximo != null) {
 
             return citaGeneralRepository.findByNombreTipoCostoId(id, nombre, tipo, costoMinimo, costoMaximo);
@@ -28,7 +28,6 @@ public class CitaGeneralServiceImpl implements CitaGeneralService {
             return Collections.emptyList();
         }
     }
-
 
     @Override
     public List<CitaGeneral> obtenerTodasCitasGenerales() {
