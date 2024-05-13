@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface CitaGeneralRepository extends JpaRepository<CitaGeneral, String> {
     CitaGeneral findByNumeroIdentificacion(String numeroIdentificacion);
-    @Query("SELECT c FROM CitaGeneral c WHERE c.nombrePaciente = :nombre AND c.tipoCita = :tipo AND c.costo BETWEEN :costoMinimo AND :costoMaximo AND c.numeroIdentificacion = :id")
+    @Query("SELECT  FROM cita_general cg  WHERE nombre_paciente = :nombre AND tipo_cita  = :tipo AND costo BETWEEN :costoMinimo AND :costoMaximo AND numero_identificacion = :id")
     List<CitaGeneral> findByNombreTipoCostoId(String id, String nombre, String tipo, Double costoMinimo, Double costoMaximo);
 
 }
