@@ -5,7 +5,6 @@ import com.unibague.CitasMedicas.repository.CitaGeneralRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -21,14 +20,14 @@ public class CitaGeneralServiceImpl implements CitaGeneralService {
 
     @Override
     public List<CitaGeneral> filtrarCitasGenerales(String id, String nombre, String tipo, Double costoMinimo, Double costoMaximo) {
-        if (id != null && nombre != null && tipo != null && costoMinimo != null && costoMaximo != null) {
-            return citaGeneralRepository.findByNombreTipoCostoId(id, nombre, tipo, costoMinimo, costoMaximo);
-        } else {
-            // Si alguno de los parámetros es null, devuelve todas las citas
+        if (id == null && nombre == null && costoMinimo == null && costoMaximo == null && tipo == null) {
+            // Si todos los parámetros son null, devuelve todas las citas generales
             return citaGeneralRepository.findAll();
+        } else {
+            // Realizar la consulta a la base de datos utilizando el repository
+            return citaGeneralRepository.findByNombreTipoCostoId(id, nombre, tipo, costoMinimo, costoMaximo);
         }
     }
-
 
     @Override
     public List<CitaGeneral> obtenerTodasCitasGenerales() {
