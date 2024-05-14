@@ -40,22 +40,12 @@ public class ControladorCitas {
 
     @GetMapping
     public ResponseEntity<List<CitaGeneral>> obtenerCitas(
-            @RequestParam(value = "id", required = false) String id,
-            @RequestParam(value = "nombre", required = false) String nombre,
-            @RequestParam(value = "costoMinimo", required = false) Double costoMinimo,
+            @RequestParam(value = "numeroIdentificacion", required = false) String numeroIdentificacion,
+            @RequestParam(value = "nombrePaciente", required = false) String nombrePaciente,
+            @RequestParam(value = "costoMinimo", required = false, defaultValue = "0") Double costoMinimo,
             @RequestParam(value = "costoMaximo", required = false) Double costoMaximo,
-            @RequestParam(value = "tipo", required = false) String tipo) {
-
-        // Verifica si todos los parámetros son nulos
-        if (id == null && nombre == null && tipo == null && costoMinimo == null && costoMaximo == null) {
-            // Si todos son nulos, devuelve todas las citas
-            List<CitaGeneral> todasLasCitas = citaGeneralService.obtenerTodasCitasGenerales();
-            return ResponseEntity.ok().body(todasLasCitas);
-        }
-
-        // Filtra las citas basadas en los parámetros proporcionados
-        List<CitaGeneral> citasFiltradas = citaGeneralService.filtrarCitasGenerales(id, nombre, tipo, costoMinimo, costoMaximo);
-
+            @RequestParam(value = "tipoCita", required = false,defaultValue = "General") String tipoCita) {
+        List<CitaGeneral> citasFiltradas = citaGeneralService.filtrarCitasGenerales(numeroIdentificacion, nombrePaciente, costoMinimo, costoMaximo, tipoCita);
         if (!citasFiltradas.isEmpty()) {
             return ResponseEntity.ok().body(citasFiltradas);
         } else {

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CitaGeneralService {
     CitaGeneral crearCitaGeneral(CitaGeneral citaGeneral);
-    List<CitaGeneral> filtrarCitasGenerales(String id, String nombre,  String tipo, Double costoMinimo, Double costoMaximo);
+    List<CitaGeneral> filtrarCitasGenerales(String numeroIdentificacion, String nombrePaciente , Double costoMinimo, Double costoMaximo,String tipoCita);
     List<CitaGeneral> obtenerTodasCitasGenerales();
     CitaGeneral actualizarCitaGeneral(String numeroIdentificacion, CitaGeneral citaGeneral);
     void eliminarCitaGeneral(String numeroIdentificacion);

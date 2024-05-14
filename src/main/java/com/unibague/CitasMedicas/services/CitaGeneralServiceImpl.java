@@ -5,13 +5,22 @@ import com.unibague.CitasMedicas.repository.CitaGeneralRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CitaGeneralServiceImpl implements CitaGeneralService {
 
     @Autowired
     private CitaGeneralRepository citaGeneralRepository;
+    @Autowired
+    private EntityManager entityManager;
 
     @Override
     public CitaGeneral crearCitaGeneral(CitaGeneral citaGeneral) {
@@ -19,14 +28,21 @@ public class CitaGeneralServiceImpl implements CitaGeneralService {
     }
 
     @Override
-    public List<CitaGeneral> filtrarCitasGenerales(String id, String nombre, String tipo, Double costoMinimo, Double costoMaximo) {
-        if (id == null && nombre == null && costoMinimo == null && costoMaximo == null && tipo == null) {
-            // Si todos los parámetros son null, devuelve todas las citas generales
-            return citaGeneralRepository.findAll();
-        } else {
-            // Realizar la consulta a la base de datos utilizando el repository
-            return citaGeneralRepository.findByNombreTipoCostoId(id, nombre, tipo, costoMinimo, costoMaximo);
+     public List<CitaGeneral> filtrarCitasGenerales(String numeroIdentificacion, String nombrePaciente, Double costoMinimo, Double costoMaximo, String tipoCita) {
+
+        List<CitaGeneral> citas = citaGeneralRepository.findAll();
+        List<CitaGeneral> citasFiltradas = new ArrayList<>();
+        for (CitaGeneral cita : citas) {
+            if ((numeroIdentificacion == null || cita.getNumeroIdentificacion().equals(numeroIdentificacion)) &&
+                    (nombrePaciente == null || cita.getNombrePaciente().equals(nombrePaciente)) &&
+                    (costoMinimo == null || cita.getCosto() >= costoMinimo) &&
+                    (costoMaximo == null || cita.getCosto() <= costoMaximo) &&
+                    (tipoCita == null || cita.getTipoCita().equals(tipoCita))) {
+                System.out.println(cita.getNumeroIdentificacion()+ cita.getNombrePaciente());
+                citasFiltradas.add(cita);
+            }
         }
+        return citasFiltradas;
     }
 
     @Override
