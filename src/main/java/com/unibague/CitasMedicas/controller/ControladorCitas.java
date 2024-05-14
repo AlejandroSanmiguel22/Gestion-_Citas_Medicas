@@ -38,34 +38,20 @@ public class ControladorCitas {
         }
     }
 
-    @GetMapping("/filtro/{numeroIdentificacion}/{nombrePaciente}/{costoMinimo}/{costoMaximo}/{tipoCita}")
+    @GetMapping("/filtro")
     public ResponseEntity<List<CitaGeneral>> obtenerCitas(
-            @PathVariable(value = "numeroIdentificacion") String numeroIdentificacion,
-            @PathVariable(value = "nombrePaciente") String nombrePaciente,
-            @PathVariable(value = "costoMinimo") String costoMinimo,
-            @PathVariable(value = "costoMaximo") String costoMaximo,
-            @PathVariable(value = "tipoCita") String tipoCita) {
-
-        // Manejar valores por defecto
-        Double costoMinimoValue = (costoMinimo == null || costoMinimo.isEmpty()) ? 0.0 : Double.valueOf(costoMinimo);
-        Double costoMaximoValue = (costoMaximo == null || costoMaximo.isEmpty()) ? null : Double.valueOf(costoMaximo);
-        String tipoCitaValue = (tipoCita == null || tipoCita.isEmpty()) ? "General" : tipoCita;
-
-        List<CitaGeneral> citasFiltradas = citaGeneralService.filtrarCitasGenerales(
-                numeroIdentificacion,
-                nombrePaciente,
-                costoMinimoValue,
-                costoMaximoValue,
-                tipoCitaValue
-        );
-
+            @RequestParam(value = "numeroIdentificacion", required = false) String numeroIdentificacion,
+            @RequestParam(value = "nombrePaciente", required = false) String nombrePaciente,
+            @RequestParam(value = "costoMinimo", required = false, defaultValue = "0") Double costoMinimo,
+            @RequestParam(value = "costoMaximo", required = false) Double costoMaximo,
+            @RequestParam(value = "tipoCita", required = false, defaultValue = "General") String tipoCita) {
+        List<CitaGeneral> citasFiltradas = citaGeneralService.filtrarCitasGenerales(numeroIdentificacion, nombrePaciente, costoMinimo, costoMaximo, tipoCita);
         if (!citasFiltradas.isEmpty()) {
             return ResponseEntity.ok().body(citasFiltradas);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
-
 
 
     @GetMapping("/todas-las-citas")
