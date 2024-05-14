@@ -28,22 +28,38 @@ public class CitaGeneralServiceImpl implements CitaGeneralService {
     }
 
     @Override
-     public List<CitaGeneral> filtrarCitasGenerales(String numeroIdentificacion, String nombrePaciente, Double costoMinimo, Double costoMaximo, String tipoCita) {
-
+    public List<CitaGeneral> filtrarCitasGenerales(String id, String nombre, Double costoMinimo, Double costoMaximo, String tipo) {
         List<CitaGeneral> citas = citaGeneralRepository.findAll();
-        List<CitaGeneral> citasFiltradas = new ArrayList<>();
-        for (CitaGeneral cita : citas) {
-            if ((numeroIdentificacion == null || cita.getNumeroIdentificacion().equals(numeroIdentificacion)) &&
-                    (nombrePaciente == null || cita.getNombrePaciente().equals(nombrePaciente)) &&
-                    (costoMinimo == null || cita.getCosto() >= costoMinimo) &&
-                    (costoMaximo == null || cita.getCosto() <= costoMaximo) &&
-                    (tipoCita == null || cita.getTipoCita().equals(tipoCita))) {
-                System.out.println(cita.getNumeroIdentificacion()+ cita.getNombrePaciente());
-                citasFiltradas.add(cita);
-            }
+
+        if (id != null && !id.isEmpty()) {
+            citas = citas.stream()
+                    .filter(cita -> cita.getNumeroIdentificacion().contains(id))
+                    .collect(Collectors.toList());
         }
-        return citasFiltradas;
+        if (nombre != null && !nombre.isEmpty()) {
+            citas = citas.stream()
+                    .filter(cita -> cita.getNombrePaciente().contains(nombre))
+                    .collect(Collectors.toList());
+        }
+        if (costoMinimo != null) {
+            citas = citas.stream()
+                    .filter(cita -> cita.getCosto() >= costoMinimo)
+                    .collect(Collectors.toList());
+        }
+        if (costoMaximo != null) {
+            citas = citas.stream()
+                    .filter(cita -> cita.getCosto() <= costoMaximo)
+                    .collect(Collectors.toList());
+        }
+        if (tipo != null && !tipo.isEmpty()) {
+            citas = citas.stream()
+                    .filter(cita -> cita.getTipoCita().contains(tipo))
+                    .collect(Collectors.toList());
+        }
+
+        return citas;
     }
+
 
     @Override
     public List<CitaGeneral> obtenerTodasCitasGenerales() {
