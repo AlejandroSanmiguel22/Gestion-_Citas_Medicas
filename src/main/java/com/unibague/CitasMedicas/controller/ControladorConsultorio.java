@@ -1,5 +1,6 @@
 package com.unibague.CitasMedicas.controller;
 
+
 import com.unibague.CitasMedicas.model.CitaGeneral;
 import com.unibague.CitasMedicas.model.Consultorio;
 import com.unibague.CitasMedicas.services.CitaGeneralService;
@@ -30,7 +31,7 @@ public class ControladorConsultorio {
     }
 
     @PostMapping("/{idConsultorio}/asignar-cita")
-    public ResponseEntity<?> asignarCitaAConsultorio(@PathVariable String idConsultorio, @RequestParam String idCita) {
+    public ResponseEntity<?> asignarCitaAConsultorio(@PathVariable Long idConsultorio, @RequestParam Long idCita) {
         Consultorio consultorio = consultorioService.obtenerConsultorioPorId(idConsultorio);
         CitaGeneral cita = citaGeneralService.obtenerCitaGeneralPorId(idCita);
 
@@ -39,14 +40,14 @@ public class ControladorConsultorio {
                 consultorio.setCitas(new ArrayList<>());
             }
 
-            if (cita.getIdConsultorio() != null) {
+            if (cita.getConsultorio() != null) {
                 Map<String, String> responseBody = new HashMap<>();
                 responseBody.put("message", "La cita ya está asignada a otro consultorio.");
                 return ResponseEntity.badRequest().body(responseBody);
             }
 
             consultorio.getCitas().add(cita);
-            cita.setIdConsultorio(idConsultorio);
+            cita.setConsultorio(consultorio);
             consultorioService.actualizarConsultorio(idConsultorio, consultorio);
 
             return ResponseEntity.ok().body(consultorio);
@@ -63,9 +64,8 @@ public class ControladorConsultorio {
         }
     }
 
-
     @GetMapping("/{id}")
-    public ResponseEntity<Consultorio> obtenerConsultorioPorId(@PathVariable String id) {
+    public ResponseEntity<Consultorio> obtenerConsultorioPorId(@PathVariable Long id) {
         Consultorio consultorio = consultorioService.obtenerConsultorioPorId(id);
         if (consultorio != null) {
             return ResponseEntity.ok().body(consultorio);
@@ -80,22 +80,13 @@ public class ControladorConsultorio {
         return ResponseEntity.ok().body(consultorios);
     }
 
-
     @PutMapping("/{id}")
-    public ResponseEntity<Consultorio> actualizarConsultorio(@PathVariable String id, @RequestBody Consultorio consultorioActualizado) {
+    public ResponseEntity<Consultorio> actualizarConsultorio(@PathVariable Long id, @RequestBody Consultorio consultorioActualizado) {
         Consultorio consultorioExistente = consultorioService.obtenerConsultorioPorId(id);
 
         if (consultorioExistente != null) {
-            consultorioExistente.setId(consultorioActualizado.getId());
             consultorioExistente.setNombre(consultorioActualizado.getNombre());
-
-            List<CitaGeneral> citas = consultorioExistente.getCitas();
-            if (citas != null && !citas.isEmpty()) {
-                for (CitaGeneral cita : citas) {
-                    cita.setIdConsultorio(consultorioActualizado.getId());
-                    citaGeneralService.actualizarCitaGeneral(cita.getNumeroIdentificacion(), cita);
-                }
-            }
+            consultorioExistente.setCitas(consultorioActualizado.getCitas());
             Consultorio consultorioActualizadoFinal = consultorioService.actualizarConsultorio(id, consultorioExistente);
             return ResponseEntity.ok().body(consultorioActualizadoFinal);
         } else {
@@ -103,12 +94,9 @@ public class ControladorConsultorio {
         }
     }
 
-
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminarConsultorio(@PathVariable String id) {
+    public ResponseEntity<String> eliminarConsultorio(@PathVariable Long id) {
         consultorioService.eliminarConsultorio(id);
         return ResponseEntity.ok().body("Consultorio eliminado correctamente");
     }
 }
-

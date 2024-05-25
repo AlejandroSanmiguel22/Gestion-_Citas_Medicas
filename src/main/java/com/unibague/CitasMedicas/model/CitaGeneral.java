@@ -1,28 +1,28 @@
 package com.unibague.CitasMedicas.model;
 
+import lombok.*;
+import javax.persistence.*;
 import java.time.LocalDate;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 @Entity
 @Table(name = "cita_general")
 public class CitaGeneral extends CitaMedica {
+
+    @Column(name = "nombre_generalista", nullable = false)
     private String nombreGeneralista;
+
     private String observacion;
-    private String idConsultorio;
 
+    @ManyToOne
+    @JoinColumn(name = "consultorio_id", nullable = false)
+    private Consultorio consultorio;
 
-    public CitaGeneral() {
-    }
-
-    public CitaGeneral(String numeroIdentificacion, String nombrePaciente, LocalDate fecha, double costo, String tipoCita, String nombreGeneralista, String observacion, String idConsultorio) {
+    private Long idConsultorio;
+    public CitaGeneral(Long numeroIdentificacion, String nombrePaciente, LocalDate fecha, double costo, String tipoCita, String nombreGeneralista, String observacion, Consultorio consultorio) {
         super(numeroIdentificacion, nombrePaciente, fecha, costo, tipoCita);
         this.nombreGeneralista = nombreGeneralista;
         this.observacion = observacion;
-        this.idConsultorio = idConsultorio;
+        this.consultorio = consultorio;
     }
 
     public String getNombreGeneralista() {
@@ -41,11 +41,19 @@ public class CitaGeneral extends CitaMedica {
         this.observacion = observacion;
     }
 
-    public String getIdConsultorio() {
+    public Consultorio getConsultorio() {
+        return consultorio;
+    }
+
+    public void setConsultorio(Consultorio consultorio) {
+        this.consultorio = consultorio;
+    }
+
+    public Long getIdConsultorio() {
         return idConsultorio;
     }
 
-    public void setIdConsultorio(String idConsultorio) {
+    public void setIdConsultorio(Long idConsultorio) {
         this.idConsultorio = idConsultorio;
     }
 }

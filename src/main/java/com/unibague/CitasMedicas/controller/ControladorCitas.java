@@ -26,8 +26,8 @@ public class ControladorCitas {
     public ResponseEntity<?> crearCita(@RequestBody CitaGeneral citaGeneral) {
         try {
             if (citaGeneral.getIdConsultorio() != null) {
-                String idConsultorio = citaGeneral.getIdConsultorio();
-                String idCita = citaGeneral.getNumeroIdentificacion();
+                Long idConsultorio = citaGeneral.getIdConsultorio();
+                Long idCita = citaGeneral.getNumeroIdentificacion();
                 citaGeneralService.asignarConsultorioACita(idCita, idConsultorio);
             }
             CitaGeneral nuevaCita = citaGeneralService.crearCitaGeneral(citaGeneral);
@@ -40,7 +40,7 @@ public class ControladorCitas {
 
     @GetMapping("/filtro")
     public ResponseEntity<List<CitaGeneral>> obtenerCitas(
-            @RequestParam(value = "numeroIdentificacion", required = false) String numeroIdentificacion,
+            @RequestParam(value = "numeroIdentificacion", required = false) Long numeroIdentificacion,
             @RequestParam(value = "nombrePaciente", required = false) String nombrePaciente,
             @RequestParam(value = "costoMinimo", required = false, defaultValue = "0") Double costoMinimo,
             @RequestParam(value = "costoMaximo", required = false) Double costoMaximo,
@@ -61,7 +61,7 @@ public class ControladorCitas {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CitaGeneral> actualizarCita(@PathVariable String id, @RequestBody CitaGeneral citaGeneral) {
+    public ResponseEntity<CitaGeneral> actualizarCita(@PathVariable Long id, @RequestBody CitaGeneral citaGeneral) {
         CitaGeneral citaExistente = citaGeneralService.obtenerCitaGeneralPorId(id);
         if (citaExistente != null) {
             // Conserva el consultorio asociado
@@ -80,7 +80,7 @@ public class ControladorCitas {
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminarCita(@PathVariable String id) {
+    public ResponseEntity<String> eliminarCita(@PathVariable Long id) {
         CitaGeneral cita = citaGeneralService.obtenerCitaGeneralPorId(id);
 
         if (cita != null) {
@@ -92,7 +92,7 @@ public class ControladorCitas {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CitaGeneral> obtenerCitaPorId(@PathVariable String id) {
+    public ResponseEntity<CitaGeneral> obtenerCitaPorId(@PathVariable Long id) {
         CitaGeneral cita = citaGeneralService.obtenerCitaGeneralPorId(id);
         if (cita != null) {
             return ResponseEntity.ok().body(cita);

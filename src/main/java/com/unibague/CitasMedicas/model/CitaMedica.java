@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class CitaMedica {
     @Id
     @Column(length = 50)
-    private String  numeroIdentificacion;
+    private Long  numeroIdentificacion;
     private String nombrePaciente;
     private LocalDate fecha;
     private  double costo;

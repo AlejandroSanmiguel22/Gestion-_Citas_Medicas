@@ -1,16 +1,12 @@
 package com.unibague.CitasMedicas.services;
 
 import com.unibague.CitasMedicas.model.CitaGeneral;
+import com.unibague.CitasMedicas.model.Consultorio;
 import com.unibague.CitasMedicas.repository.CitaGeneralRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,12 +24,12 @@ public class CitaGeneralServiceImpl implements CitaGeneralService {
     }
 
     @Override
-    public List<CitaGeneral> filtrarCitasGenerales(String id, String nombre, Double costoMinimo, Double costoMaximo, String tipo) {
+    public List<CitaGeneral> filtrarCitasGenerales(Long id, String nombre, Double costoMinimo, Double costoMaximo, String tipo) {
         List<CitaGeneral> citas = citaGeneralRepository.findAll();
 
-        if (id != null && !id.isEmpty()) {
+        if (id != null) {
             citas = citas.stream()
-                    .filter(cita -> cita.getNumeroIdentificacion().contains(id))
+                    .filter(cita -> cita.getNumeroIdentificacion().equals(id))
                     .collect(Collectors.toList());
         }
         if (nombre != null && !nombre.isEmpty()) {
@@ -60,15 +56,14 @@ public class CitaGeneralServiceImpl implements CitaGeneralService {
         return citas;
     }
 
-
     @Override
     public List<CitaGeneral> obtenerTodasCitasGenerales() {
         return citaGeneralRepository.findAll();
     }
 
     @Override
-    public CitaGeneral actualizarCitaGeneral(String numeroIdentificacion, CitaGeneral citaGeneral) {
-        CitaGeneral citaExistente = citaGeneralRepository.findByNumeroIdentificacion(numeroIdentificacion);
+    public CitaGeneral actualizarCitaGeneral(Long numeroIdentificacion, CitaGeneral citaGeneral) {
+        CitaGeneral citaExistente = citaGeneralRepository.findById(numeroIdentificacion).orElse(null);
         if (citaExistente != null) {
             // Copiar los valores actualizados a la cita existente
             citaExistente.setNombrePaciente(citaGeneral.getNombrePaciente());
@@ -77,7 +72,7 @@ public class CitaGeneralServiceImpl implements CitaGeneralService {
             citaExistente.setTipoCita(citaGeneral.getTipoCita());
             citaExistente.setNombreGeneralista(citaGeneral.getNombreGeneralista());
             citaExistente.setObservacion(citaGeneral.getObservacion());
-            citaExistente.setIdConsultorio(citaGeneral.getIdConsultorio());
+            citaExistente.setConsultorio(citaGeneral.getConsultorio());
 
             // Guardar la cita existente actualizada en la base de datos
             return citaGeneralRepository.save(citaExistente);
@@ -86,27 +81,30 @@ public class CitaGeneralServiceImpl implements CitaGeneralService {
     }
 
     @Override
-    public void eliminarCitaGeneral(String numeroIdentificacion) {
+    public void eliminarCitaGeneral(Long numeroIdentificacion) {
         citaGeneralRepository.deleteById(numeroIdentificacion);
     }
 
     @Override
-    public CitaGeneral obtenerCitaGeneralPorId(String numeroIdentificacion) {
+    public CitaGeneral obtenerCitaGeneralPorId(Long numeroIdentificacion) {
         return citaGeneralRepository.findById(numeroIdentificacion).orElse(null);
     }
 
     @Override
-    public void asignarConsultorioACita(String idCita, String idConsultorio) {
+    public void asignarConsultorioACita(Long idCita, Long idConsultorio) {
         CitaGeneral cita = obtenerCitaGeneralPorId(idCita);
         if (cita != null) {
-            cita.setIdConsultorio(idConsultorio);
+            Consultorio consultorio = new Consultorio();
+            consultorio.setId(idConsultorio);
+            cita.setConsultorio(consultorio);
             citaGeneralRepository.save(cita);
         }
     }
 
     @Override
-    public List<CitaGeneral> obtenerCitasPorConsultorio(String idConsultorio) {
+    public List<CitaGeneral> obtenerCitasPorConsultorio(Long idConsultorio) {
         // Implementa la lógica para obtener citas por consultorio utilizando métodos del repositorio si es necesario
-        return null;
+        return citaGeneralRepository.findByConsultorioId(idConsultorio);
     }
 }
+
