@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
+// cambios xd
 public class Consultorio {
     private String id;
     private String nombre;
